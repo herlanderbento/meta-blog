@@ -4,7 +4,6 @@ from typing import Annotated
 from pydantic import Strict
 from src.core.shared.domain.entity import AggregateRoot
 from src.core.account.domain.user import CreateUserCommand, User, UserId
-from src.core.account.domain.user_role import UserRole
 
 
 class TestUser:
@@ -17,7 +16,8 @@ class TestUser:
             "name",
             "email",
             "password",
-            "role",
+            "is_staff",
+            "is_superuser",
             "is_active",
             "created_at",
             "updated_at",
@@ -28,7 +28,8 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
+            is_staff=False,
+            is_superuser=False,
             is_active=True,
         )
 
@@ -40,7 +41,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
         assert user.created_at is not None
@@ -51,7 +51,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
         assert user.updated_at is not None
@@ -62,7 +61,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
         user = User.create(command)
@@ -71,8 +69,10 @@ class TestUser:
         assert user.name == "John Doe"
         assert user.email == "john.doe@example.com"
         assert user.password == "password123"
-        assert user.role == UserRole.USER
+        assert user.is_staff is False
+        assert user.is_superuser is False
         assert user.is_active is True
+
         assert isinstance(user.id, UserId)
         assert isinstance(user.created_at, datetime.datetime)
         assert isinstance(user.updated_at, datetime.datetime)
@@ -83,7 +83,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
 
@@ -101,7 +100,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
 
@@ -116,7 +114,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
 
@@ -134,7 +131,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
 
@@ -149,7 +145,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
 
@@ -167,7 +162,6 @@ class TestUser:
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
             is_active=True,
         )
 
@@ -176,37 +170,76 @@ class TestUser:
         assert user.password == "new_password123"
         assert user.notification.has_errors() is False
 
-    def test_should_generate_an_error_in_change_role(self):
+    def test_should_generate_an_error_in_change_is_staff(self):
         user = User(
             id=UserId(),
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
+            is_staff=False,
+            is_superuser=False,
             is_active=True,
         )
 
-        user.change_role("fake role")
+        user.change_is_staff("fake is_staff")
 
         assert user.notification.has_errors() is True
         assert len(user.notification.errors) == 1
         assert user.notification.errors == {
-            "role": ["Input should be 'admin' or 'user'"]
+            "is_staff": ["Input should be a valid boolean, unable to interpret input"],
         }
 
-    def test_should_change_role(self):
+    def test_should_change_is_staff(self):
         user = User(
             id=UserId(),
             name="John Doe",
             email="john.doe@example.com",
             password="password123",
-            role=UserRole.USER,
+            is_staff=False,
+            is_superuser=False,
             is_active=True,
         )
 
-        user.change_role(UserRole.ADMIN)
+        user.change_is_staff(True)
 
-        assert user.role == UserRole.ADMIN
+        assert user.is_staff == True
+        assert user.notification.has_errors() is False
+
+    def test_should_generate_an_error_in_change_is_superuser(self):
+        user = User(
+            id=UserId(),
+            name="John Doe",
+            email="john.doe@example.com",
+            password="password123",
+            is_staff=False,
+            is_superuser=False,
+            is_active=True,
+        )
+
+        user.change_is_superuser("fake is_superuser")
+
+        assert user.notification.has_errors() is True
+        assert len(user.notification.errors) == 1
+        assert user.notification.errors == {
+            "is_superuser": [
+                "Input should be a valid boolean, unable to interpret input"
+            ],
+        }
+
+    def test_should_change_is_superuser(self):
+        user = User(
+            id=UserId(),
+            name="John Doe",
+            email="john.doe@example.com",
+            password="password123",
+            is_staff=False,
+            is_superuser=False,
+            is_active=True,
+        )
+
+        user.change_is_superuser(True)
+
+        assert user.is_superuser == True
         assert user.notification.has_errors() is False
 
     def test_fields_mapping(self):
@@ -215,7 +248,8 @@ class TestUser:
             "name": str,
             "email": str,
             "password": str,
-            "role": UserRole | None,
+            "is_staff": bool | None,
+            "is_superuser": bool | None,
             "is_active": bool | None,
             "created_at": Annotated[datetime.datetime, Strict()],
             "updated_at": Annotated[datetime.datetime, Strict()],

@@ -7,14 +7,16 @@ from src.core.shared.domain.repositories.repository_interface import (
 from src.core.shared.domain.repositories.search_params import SearchParams
 from src.core.shared.domain.repositories.search_result import SearchResult
 from src.core.account.domain.user import User, UserId
-from src.core.account.domain.user_role import UserRole
 
 
 @dataclass(frozen=True, slots=True)
 class UserFilter:
     name: str | None = field(default=None)
     email: str | None = field(default=None)
-    role: UserRole | None = field(default=None)
+    is_staff: bool | None = field(default=None)
+    is_superuser: bool | None = field(default=None)
+    is_active: bool | None = field(default=None)
+
 
 
 class UserSearchParams(SearchParams[UserFilter]):

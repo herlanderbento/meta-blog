@@ -14,7 +14,7 @@ class IsAuthenticated(BasePermission):
 class IsAdmin(BasePermission):
 
     def has_permission(self, request, view):
-        if not request.user.is_superuser:
+        if not request.user.is_superuser and request.user.is_staff:
             raise PermissionDenied(
                 "You do not have the necessary permissions to access this resource. Admin privileges are required."
             )

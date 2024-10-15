@@ -5,7 +5,6 @@ from typing import Annotated
 from pydantic import Strict
 from src.core.shared.domain.entity import AggregateRoot
 from src.core.shared.domain.value_objects import Uuid
-from src.core.account.domain.user_role import UserRole
 
 
 @dataclass
@@ -13,7 +12,8 @@ class CreateUserCommand:
     name: str
     email: str
     password: str
-    role: UserRole | None = UserRole.USER
+    is_staff: bool | None = False
+    is_superuser: bool | None = False
     is_active: bool | None = True
 
 
@@ -27,7 +27,8 @@ class User(AggregateRoot):
     name: str
     email: str
     password: str
-    role: UserRole | None = UserRole.USER
+    is_staff: bool | None = False
+    is_superuser: bool | None = False
     is_active: bool | None = True
     created_at: Annotated[datetime.datetime, Strict()] = field(
         default_factory=lambda: datetime.datetime.now(datetime.UTC)
@@ -42,7 +43,8 @@ class User(AggregateRoot):
             name=props.name,
             email=props.email,
             password=props.password,
-            role=props.role,
+            is_superuser=props.is_superuser,
+            is_staff=props.is_staff,
             is_active=props.is_active,
         )
 
@@ -65,8 +67,13 @@ class User(AggregateRoot):
         self.touch()
         self.validate()
 
-    def change_role(self, role: UserRole):
-        self.role = role
+    def change_is_staff(self, is_staff: bool):
+        self.is_staff = is_staff
+        self.touch()
+        self.validate()
+
+    def change_is_superuser(self, is_superuser: bool):
+        self.is_superuser = is_superuser
         self.touch()
         self.validate()
 
@@ -88,7 +95,8 @@ class User(AggregateRoot):
                 "name": self.name,
                 "email": self.email,
                 "password": self.password,
-                "role": self.role,
+                "is_staff": self.is_staff,
+                "is_superuser": self.is_superuser,
                 "is_active": self.is_active,
                 "created_at": self.created_at,
                 "updated_at": self.updated_at,

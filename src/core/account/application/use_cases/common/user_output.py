@@ -3,7 +3,6 @@ import datetime
 from uuid import UUID
 
 from src.core.account.domain.user import User
-from src.core.account.domain.user_role import UserRole
 
 
 @dataclass(slots=True)
@@ -11,7 +10,8 @@ class UserOutput:
     id: UUID
     name: str
     email: str
-    role: UserRole | None
+    is_staff: bool | None
+    is_superuser: bool | None
     is_active: bool | None
     created_at: datetime.datetime
     updated_at: datetime.datetime
@@ -22,7 +22,8 @@ class UserOutput:
             id=entity.id.value,
             name=entity.name,
             email=entity.email,
-            role=entity.role,
+            is_staff=entity.is_staff,
+            is_superuser=entity.is_superuser,
             is_active=entity.is_active,
             created_at=entity.created_at,
             updated_at=entity.updated_at,

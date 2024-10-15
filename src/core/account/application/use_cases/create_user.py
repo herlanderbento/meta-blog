@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 
-from src.core.account.application.use_cases.common.exceptions import UserAlreadyExistsException
+from src.core.account.application.use_cases.common.exceptions import (
+    UserAlreadyExistsException,
+)
 from src.core.account.application.use_cases.common.user_output import UserOutput
 from src.core.shared.application.cryptography import ICryptography
 from src.core.shared.application.use_cases import UseCase
@@ -15,7 +17,8 @@ class CreateUserInput:
     name: str
     email: str
     password: str
-    role: UserRole | None = UserRole.USER
+    is_staff: bool | None = False
+    is_superuser: bool | None = False
     is_active: bool | None = True
 
 
@@ -45,7 +48,8 @@ class CreateUserUseCase(UseCase):
             name=input.name,
             email=input.email,
             password=hashed_password,
-            role=input.role, 
+            is_staff=input.is_staff,
+            is_superuser=input.is_superuser,
             is_active=input.is_active,
         )
 

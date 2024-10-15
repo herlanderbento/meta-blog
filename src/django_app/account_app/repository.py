@@ -31,8 +31,10 @@ class UserDjangoRepository(IUserRepository):
         return UserModelMapper.to_entity(model) if model else None
 
     def find_by_ids(self, entity_ids: Set[UserId]) -> List[User]:
-         models = UserModel.objects.filter(id__in=[str(entity_id.value) for entity_id in entity_ids])
-         return  [UserModelMapper.to_entity(model) for model in models]
+        models = UserModel.objects.filter(
+            id__in=[str(entity_id.value) for entity_id in entity_ids]
+        )
+        return [UserModelMapper.to_entity(model) for model in models]
 
     def find_by_email(self, email: str) -> User | None:
         model = UserModel.objects.filter(email=email).first()
@@ -47,7 +49,8 @@ class UserDjangoRepository(IUserRepository):
             name=entity.name,
             email=entity.email,
             password=entity.password,
-            role=entity.role,
+            is_staff=entity.is_staff,
+            is_superuser=entity.is_superuser,
             is_active=entity.is_active,
             updated_at=entity.updated_at,
         )
@@ -65,8 +68,14 @@ class UserDjangoRepository(IUserRepository):
             if props.filter.email:
                 query = query.filter(email__icontains=props.filter.email)
 
-            if props.filter.role:
-                query = query.filter(role=props.filter.role)
+            if props.filter.is_staff:
+                query = query.filter(is_staff=props.filter.is_staff)
+
+            if props.filter.is_superuser:
+                query = query.filter(is_superuser=props.filter.is_superuser)
+
+            if props.filter.is_active:
+                query = query.filter(is_active=props.filter.is_active)
 
         if props.sort and props.sort in self.sortable_fields:
             if props.sort_dir == SortDirection.DESC:

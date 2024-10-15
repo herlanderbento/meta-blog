@@ -22,8 +22,11 @@ class AuthenticateUserInput:
 
 @dataclass
 class UserOutput:
+    id: str
     name: str
     email: str
+    is_staff: bool
+    is_superuser: bool
 
 
 @dataclass
@@ -68,8 +71,11 @@ class AuthenticateUserUseCase(UseCase):
         return AuthenticateUserOutput(
             token=token,
             user=UserOutput(
+                id=user.id,
                 name=user.name,
                 email=user.email,
+                is_staff=user.is_staff,
+                is_superuser=user.is_superuser,
             ),
         )
 
@@ -77,7 +83,8 @@ class AuthenticateUserUseCase(UseCase):
         payload = {
             "user_id": str(user.id),
             "email": user.email,
-            "role": user.role,
+            "is_staff": user.is_staff,
+            "is_superuser": user.is_superuser,
             "exp": datetime.now(timezone.utc) + timedelta(seconds=3600),
         }
         return self.token_generator.generate(payload)

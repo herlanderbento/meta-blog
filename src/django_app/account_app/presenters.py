@@ -13,7 +13,8 @@ class UserPresenter(ResourcePresenter):
     id: UUID
     name: str
     email: str
-    role: UserRole | None
+    is_staff: bool | None
+    is_superuser: bool | None
     is_active: bool | None
     created_at: datetime.datetime
     updated_at: datetime.datetime
@@ -24,9 +25,8 @@ class UserPresenter(ResourcePresenter):
             id=output.id,
             name=output.name,
             email=output.email,
-            role=(
-                UserRole(output.role) if isinstance(output.role, str) else output.role
-            ),
+            is_staff=output.is_staff,
+            is_superuser=output.is_superuser,
             is_active=output.is_active,
             created_at=output.created_at,
             updated_at=output.updated_at,

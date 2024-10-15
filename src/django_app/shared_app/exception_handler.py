@@ -10,6 +10,7 @@ from src.core.shared.domain.exceptions import (
     ApplicationNotFoundException,
 )
 from src.core.account.application.use_cases.common.exceptions import (
+    InvalidCredentialsException,
     UserAlreadyExistsException,
 )
 
@@ -46,6 +47,11 @@ def handle_user_already_exists_error(exc: UserAlreadyExistsException, context):
     return response
 
 
+def handle_invalid_credentials_error(exc: InvalidCredentialsException, context):
+    response = Response({"message": exc.args[0]}, status.HTTP_401_UNAUTHORIZED)
+    return response
+
+
 handlers = [
     {"exception": ValidationError, "handle": handle_validation_error},
     {"exception": EntityValidationException, "handle": handle_entity_validation_error},
@@ -58,6 +64,10 @@ handlers = [
     {
         "exception": UserAlreadyExistsException,
         "handle": handle_user_already_exists_error,
+    },
+    {
+        "exception": InvalidCredentialsException,
+        "handle": handle_invalid_credentials_error,
     },
 ]
 

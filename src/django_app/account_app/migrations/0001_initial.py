@@ -23,7 +23,6 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('email', models.EmailField(max_length=254, unique=True)),
                 ('name', models.CharField(max_length=255)),
-                ('role', models.CharField(choices=[('USER', 'User'), ('ADMIN', 'Admin')], default='USER', max_length=10)),
                 ('is_active', models.BooleanField(default=True)),
                 ('is_staff', models.BooleanField(default=False)),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),

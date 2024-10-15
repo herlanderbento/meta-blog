@@ -1,4 +1,6 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions
+from rest_framework.views import APIView
+
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,7 +18,7 @@ from src.django_app.authentication_app.serializers import (
 from src.django_app.authentication_app.services.jwt_auth_service import JwtAuthService
 
 
-class AuthenticationViewSet(viewsets.ViewSet):
+class AuthenticationAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def __init__(self, **kwargs) -> None:
@@ -32,7 +34,7 @@ class AuthenticationViewSet(viewsets.ViewSet):
             jwt_token_generator,
         )
 
-    def create(self, request: Request) -> Response:
+    def post(self, request: Request) -> Response:
         serializer = AuthenticateUserInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -47,8 +49,11 @@ class AuthenticationViewSet(viewsets.ViewSet):
                 "token_type": output.token_type,
                 "expires_in": output.expires_in,
                 "user": {
+                    "id": output.user.id.value,
                     "email": output.user.email,
                     "name": output.user.name,
+                    "is_staff": output.user.is_staff,
+                    "is_superuser": output.user.is_superuser,
                 },
             },
         )
