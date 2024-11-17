@@ -204,11 +204,11 @@ class UserAPIView(APIView, FilterExtractor):
         ):
             return [IsAuthenticated(), IsAdminUser()]
 
-        if self.request.method == "GET" and self.kwargs.get("user_id"):
-            return [IsAuthenticated()]
+        # if self.request.method == "GET" and self.kwargs.get("user_id"):
+        #     return [IsAuthenticated()]
 
         permissions_map = {
-            "GET": [IsAuthenticated(), IsAdminUser()],
+            "GET": [],
             "POST": [AllowAny()],
             "PUT": [IsAuthenticated()],
             "PATCH": [IsAuthenticated()],

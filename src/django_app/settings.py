@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "drf_yasg",
     "src.django_app.account_app",
     "src.django_app.authentication_app",
+    "src.django_app.category_app",
+
 ]
 
 MIDDLEWARE = [

@@ -125,6 +125,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Rotas para UserAPIView
     path("api/", include("src.django_app.account_app.urls")),
+    # Rotas para CategoryAPIView
+    path("api/", include("src.django_app.category_app.urls")),
     # Rota para AuthenticationAPIView
     path("api/login", AuthenticationAPIView.as_view(), name="login"),
     path(
