@@ -3,6 +3,9 @@ from rest_framework.views import exception_handler as rest_framework_exception_h
 from rest_framework.response import Response
 from rest_framework import status
 
+from src.core.category.application.use_cases.common.exceptions import (
+    CategoryAlreadyExistsException,
+)
 from src.core.shared.domain.exceptions import (
     EntityValidationException,
     InvalidArgumentException,
@@ -47,6 +50,11 @@ def handle_user_already_exists_error(exc: UserAlreadyExistsException, context):
     return response
 
 
+def handle_category_already_exists_error(exc: CategoryAlreadyExistsException, context):
+    response = Response({"message": exc.args[0]}, status.HTTP_409_CONFLICT)
+    return response
+
+
 def handle_invalid_credentials_error(exc: InvalidCredentialsException, context):
     response = Response({"message": exc.args[0]}, status.HTTP_401_UNAUTHORIZED)
     return response
@@ -68,6 +76,10 @@ handlers = [
     {
         "exception": InvalidCredentialsException,
         "handle": handle_invalid_credentials_error,
+    },
+    {
+        "exception": CategoryAlreadyExistsException,
+        "handle": handle_category_already_exists_error,
     },
 ]
 

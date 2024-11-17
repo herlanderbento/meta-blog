@@ -34,6 +34,10 @@ class CategoryDjangoRepository(ICategoryRepository):
         )
         return [CategoryModelMapper.to_entity(model) for model in models]
 
+    def find_by_name(self, name: str) -> Category | None:
+        model = CategoryModel.objects.filter(name=name).first()
+        return CategoryModelMapper.to_entity(model) if model else None
+
     def find_all(self) -> list[Category]:
         models = CategoryModel.objects.all()
         return [CategoryModelMapper.to_entity(model) for model in models]

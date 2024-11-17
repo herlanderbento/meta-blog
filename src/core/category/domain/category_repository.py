@@ -14,4 +14,5 @@ class CategorySearchResult(SearchResult[Category]):
 
 
 class ICategoryRepository(ISearchableRepository[Category, CategoryId], ABC):
-    pass
+     def find_by_name(self, name: str) -> Category | None:
+         pass

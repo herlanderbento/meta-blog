@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from src.core.category.application.use_cases.common.exceptions import CategoryAlreadyExistsException
 from src.core.shared.domain.exceptions import EntityValidationException
 from src.core.category.domain.category import Category
 from src.core.category.domain.category_repository import ICategoryRepository
@@ -26,6 +27,11 @@ class CreateCategoryUseCase(UseCase):
         self.category_repo = category_repo
 
     def execute(self, input: CreateCategoryInput) -> CreateCategoryOutput:
+        category_with_same_name = self.category_repo.find_by_name(input.name)
+
+        if category_with_same_name:
+            raise CategoryAlreadyExistsException()
+
         category = Category.create(input)
 
         if category.notification.has_errors():

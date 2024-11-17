@@ -33,5 +33,10 @@ class CategoryInMemoryRepository(
             else super()._apply_sort(items, "created_at", SortDirection.DESC)
         )
 
+    def find_by_name(self, name) -> Category | None:
+        return next(
+            (category for category in self.items if category.name == name), None
+        )
+
     def get_entity(self) -> Type[Category]:
         return Category
