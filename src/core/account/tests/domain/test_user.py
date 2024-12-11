@@ -3,7 +3,7 @@ from typing import Annotated
 
 from pydantic import Strict
 from src.core.shared.domain.entity import AggregateRoot
-from src.core.account.domain.user import CreateUserCommand, User, UserId
+from src.core.account.domain.user import UserCreateCommand, User, UserId
 
 
 class TestUser:
@@ -57,7 +57,7 @@ class TestUser:
         assert isinstance(user.updated_at, datetime.datetime)
 
     def test_should_be_able_create_user(self):
-        command = CreateUserCommand(
+        command = UserCreateCommand(
             name="John Doe",
             email="john.doe@example.com",
             password="password123",

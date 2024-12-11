@@ -8,7 +8,7 @@ from src.core.shared.domain.value_objects import Uuid
 
 
 @dataclass
-class CreateUserCommand:
+class UserCreateCommand:
     name: str
     email: str
     password: str
@@ -38,7 +38,7 @@ class User(AggregateRoot):
     )
 
     @staticmethod
-    def create(props: CreateUserCommand) -> "User":
+    def create(props: UserCreateCommand) -> "User":
         return User(
             name=props.name,
             email=props.email,

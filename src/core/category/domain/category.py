@@ -8,7 +8,7 @@ from src.core.shared.domain.value_objects import Uuid
 
 
 @dataclass
-class CreateCategoryCommand:
+class CategoryCreateCommand:
     name: str
     description: str | None = None
     is_active: StrictBool = True
@@ -32,7 +32,7 @@ class Category(AggregateRoot):
     )
 
     @staticmethod
-    def create(command: CreateCategoryCommand):
+    def create(command: CategoryCreateCommand):
         return Category(
             name=command.name,
             description=command.description,
